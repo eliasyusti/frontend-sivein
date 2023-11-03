@@ -4,7 +4,7 @@ import { Grid } from "@material-ui/core";
 // components
 import PageTitle from "../../components/PageTitle";
 
-export default function TypographyPage() {
+export default function Products() {
   return (
     <>
       <PageTitle title="Productos" />
