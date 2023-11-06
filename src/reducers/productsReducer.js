@@ -5,7 +5,7 @@ const initialState = [];
 const Products = (state = initialState, action) => {
   switch (action.type) {
     case GET_PRODUCTS: {
-      return [action.payload];
+      return [...action.payload];
     }
 
     default:

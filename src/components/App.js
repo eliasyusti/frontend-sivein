@@ -10,7 +10,6 @@ import Login from "../pages/login";
 
 // context
 import { useUserState } from "../context/UserContext";
-
 export default function App() {
   // global
   var { isAuthenticated } = useUserState();
