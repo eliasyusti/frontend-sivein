@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import {
   Button,
   Dialog,
@@ -7,6 +8,7 @@ import {
   DialogActions,
 } from "@material-ui/core";
 import { FormCreateProducts } from "../createProducts/formCreateProducts";
+import { postProducts } from "../../../actions/productActions";
 
 const initValues = {
   name: "",
@@ -16,11 +18,18 @@ const initValues = {
 };
 
 export default function CreateProducts({ open, handleClose }) {
+  const dispatch = useDispatch();
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const [values, setValues] = useState(initValues);
 
   const handleChange = (name) => (event) => {
     setValues({ ...values, [name]: event.target.value });
+  };
+
+  const handleSave = () => {
+    dispatch(postProducts(values));
+    setValues(initValues);
+    handleClose();
   };
 
   return (
@@ -39,7 +48,7 @@ export default function CreateProducts({ open, handleClose }) {
             <Button onClick={handleClose} color="primary">
               Cancelar
             </Button>
-            <Button onClick={handleClose} color="primary">
+            <Button onClick={handleSave} color="primary">
               Guardar
             </Button>
           </DialogActions>
