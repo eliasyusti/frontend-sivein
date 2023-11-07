@@ -18,7 +18,22 @@ export default function DenseTable() {
     productsData();
   }, [productsData]);
 
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   const Products = useSelector((state) => state.Products);
+
+  const data = Products.map((product) => ({
+    name: product.name,
+    description: product.description,
+    price: product.price,
+    category: product.category,
+  }));
 
   const columns = [
     {
@@ -54,20 +69,6 @@ export default function DenseTable() {
   const options = {
     filter: true,
     selectableRows: false,
-  };
-
-  const data = Products.map((product) => ({
-    name: product.name,
-    description: product.description,
-    price: product.price,
-    category: product.category,
-  }));
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
   };
 
   return (

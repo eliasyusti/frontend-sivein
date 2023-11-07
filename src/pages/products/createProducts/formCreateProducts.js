@@ -1,9 +1,9 @@
 import React from "react";
 import TextField from "@material-ui/core/TextField";
 
-// const getValue = (key, value) => value[key];
+const getValue = (key, value) => value[key];
 
-export const FormCreateProducts = ({ handleChange }) => {
+export const FormCreateProducts = ({ handleChange, values }) => {
   return (
     <form noValidate autoComplete="off">
       <TextField
@@ -13,7 +13,7 @@ export const FormCreateProducts = ({ handleChange }) => {
         id="name"
         label="Nombre"
         type="text"
-        // value={getValue("name", values)}
+        value={getValue("name", values)}
         fullWidth
       />
       <TextField
@@ -22,7 +22,7 @@ export const FormCreateProducts = ({ handleChange }) => {
         onChange={handleChange("description")}
         id="description"
         label="Descripcion"
-        // value={getValue("description", values)}
+        value={getValue("description", values)}
         type="text"
         fullWidth
       />
@@ -32,8 +32,8 @@ export const FormCreateProducts = ({ handleChange }) => {
         onChange={handleChange("price")}
         id="price"
         label="Precio"
-        // value={getValue("price", values)}
-        type="text"
+        value={getValue("price", values)}
+        type="number"
         fullWidth
       />
       <TextField
@@ -42,7 +42,7 @@ export const FormCreateProducts = ({ handleChange }) => {
         onChange={handleChange("category")}
         id="category"
         label="Categoria"
-        // value={getValue("category", values)}
+        value={getValue("category", values)}
         type="text"
         fullWidth
       />

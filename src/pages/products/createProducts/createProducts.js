@@ -42,7 +42,7 @@ export default function CreateProducts({ open, handleClose }) {
         >
           <DialogContent>
             <DialogContentText>AGREGAR UN PRODUCTO NUEVO</DialogContentText>
-            <FormCreateProducts handleChange={handleChange} />
+            <FormCreateProducts handleChange={handleChange} values={values} />
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose} color="primary">
