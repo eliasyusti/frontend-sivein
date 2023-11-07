@@ -1,5 +1,5 @@
 import React from "react";
-import DenseTable from "./tableProducts";
+import DenseTable from "./getProducts/getProducts";
 
 // components
 
