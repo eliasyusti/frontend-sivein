@@ -8,16 +8,20 @@ import App from "./components/App";
 import * as serviceWorker from "./serviceWorker";
 import { LayoutProvider } from "./context/LayoutContext";
 import { UserProvider } from "./context/UserContext";
+import store from "./store/configureStore";
+import { Provider } from "react-redux";
 
 ReactDOM.render(
-  <LayoutProvider>
-    <UserProvider>
-      <ThemeProvider theme={Themes.default}>
-        <CssBaseline />
-        <App />
-      </ThemeProvider>
-    </UserProvider>
-  </LayoutProvider>,
+  <Provider store={store}>
+    <LayoutProvider>
+      <UserProvider>
+        <ThemeProvider theme={Themes.default}>
+          <CssBaseline />
+          <App />
+        </ThemeProvider>
+      </UserProvider>
+    </LayoutProvider>
+  </Provider>,
   document.getElementById("root"),
 );
 
