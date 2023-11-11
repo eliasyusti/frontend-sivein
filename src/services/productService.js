@@ -1,5 +1,5 @@
 import { URLAPI } from "./settings";
-import { getFromApi, postToApi } from "./wrapperPeticions";
+import { getFromApi, postToApi, putToApi } from "./wrapperPeticions";
 const PATH_PRINCIPAL = "products";
 
 export const getProductsService = async () => {
@@ -23,6 +23,20 @@ export const createProductsService = async (body, onSuccess, onPending) => {
     return data;
   } catch (error) {
     console.error(`Error in create products ${error}`);
+    throw error;
+  }
+};
+
+export const editProductsService = async (body, onSuccess) => {
+  try {
+    const response = await putToApi(
+      body,
+      `${URLAPI}/${PATH_PRINCIPAL}/${body.id}`,
+      onSuccess,
+    );
+    return response;
+  } catch (error) {
+    console.error(`Error in update product ${error}`);
     throw error;
   }
 };

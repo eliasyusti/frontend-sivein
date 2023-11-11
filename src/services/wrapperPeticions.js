@@ -71,3 +71,56 @@ export const postToApi = async (
       return onError(error.response.data);
     });
 };
+
+export const putToApi = async (
+  json = {},
+  url = null,
+  onSuccess = null,
+  onError = () => {},
+  onPending = () => {},
+  token = "",
+  type = "json",
+) => {
+  if (
+    url == null ||
+    url === "" ||
+    onSuccess == null ||
+    typeof onSuccess !== "function"
+  ) {
+    throw new Error("url and onSuccess can't be null or empty");
+  }
+  let headers;
+  await onPending();
+  if (type.includes("application") || type.includes("image")) {
+    headers = {
+      "Content-Type": `${type}`,
+      "Content-Disposition": `attachment; filename=${json.name}`,
+    };
+  } else {
+    switch (type) {
+      case "auth":
+        headers = {
+          Authorization: `Basic ${base64.encode(token)}`,
+        };
+        JSON.stringify(json);
+        break;
+      default:
+        headers = {
+          Authorization: `Bearer ${token}`,
+        };
+        JSON.stringify(json);
+    }
+  }
+
+  return axios
+    .put(url, json, { headers })
+    .then((response) => {
+      const { status, data } = response;
+      if (response.status === 200) {
+        return onSuccess({ data, status });
+      } else {
+        return onError({ data, status });
+      }
+    })
+    .catch((error) => onError(error));
+};
