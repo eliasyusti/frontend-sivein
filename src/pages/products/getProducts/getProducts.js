@@ -55,7 +55,12 @@ export default function DenseTable() {
   const columns = [
     {
       name: "id",
-      options: { print: false, display: false },
+      options: {
+        print: false,
+        display: false,
+        viewColumns: false,
+        filter: false,
+      },
     },
     {
       name: "name",
@@ -78,7 +83,7 @@ export default function DenseTable() {
       options: {
         filter: false,
         customBodyRender: (value, tableMeta, updateValue) => {
-          //console.log(tableMeta);
+          console.log(tableMeta);
           return (
             <Button
               variant="contained"
