@@ -83,7 +83,7 @@ export default function DenseTable() {
       options: {
         filter: false,
         customBodyRender: (value, tableMeta, updateValue) => {
-          console.log(tableMeta);
+          //console.log(tableMeta);
           return (
             <Button
               variant="contained"
