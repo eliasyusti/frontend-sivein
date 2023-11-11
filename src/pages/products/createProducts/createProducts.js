@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import { isEmpty } from "lodash";
 import {
   Button,
   Dialog,
@@ -8,7 +9,7 @@ import {
   DialogActions,
 } from "@material-ui/core";
 import { FormCreateProducts } from "../createProducts/formCreateProducts";
-import { postProducts } from "../../../actions/productActions";
+import { editProducts, postProducts } from "../../../actions/productActions";
 
 const initValues = {
   name: "",
@@ -17,17 +18,34 @@ const initValues = {
   category: "",
 };
 
-export default function CreateProducts({ open, handleClose }) {
+const getNewValuesForEdit = (valuesForEdit) => {
+  return {
+    ...valuesForEdit,
+  };
+};
+
+export default function CreateProducts({ valuesForEdit, open, handleClose }) {
   const dispatch = useDispatch();
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [values, setValues] = useState(initValues);
+
+  useEffect(() => {
+    if (!isEmpty(valuesForEdit)) {
+      const newValuesForEdit = getNewValuesForEdit(valuesForEdit);
+      setValues(newValuesForEdit);
+      return;
+    }
+    setValues(initValues);
+  }, [valuesForEdit]);
 
   const handleChange = (name) => (event) => {
     setValues({ ...values, [name]: event.target.value });
   };
 
-  const handleSave = () => {
-    dispatch(postProducts(values));
+  const handleSave = async () => {
+    const functionActionsCreateEdit = isEmpty(valuesForEdit)
+      ? postProducts
+      : editProducts;
+    await dispatch(functionActionsCreateEdit(values));
     setValues(initValues);
     handleClose();
   };
