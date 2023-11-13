@@ -3,11 +3,10 @@ import TextField from "@material-ui/core/TextField";
 
 const getValue = (key, value) => value[key];
 
-export const FormCreateProducts = ({ handleChange, values }) => {
+export const FormCreateProducts = ({ handleChange, values, errors }) => {
   return (
     <form noValidate autoComplete="off">
       <TextField
-        autoFocus
         margin="dense"
         onChange={handleChange("name")}
         id="name"
@@ -15,9 +14,11 @@ export const FormCreateProducts = ({ handleChange, values }) => {
         type="text"
         value={getValue("name", values)}
         fullWidth
+        required
+        error={errors.name}
+        helperText={errors.name && "Este campo no puede estar vacío"}
       />
       <TextField
-        autoFocus
         margin="dense"
         onChange={handleChange("description")}
         id="description"
@@ -25,9 +26,11 @@ export const FormCreateProducts = ({ handleChange, values }) => {
         value={getValue("description", values)}
         type="text"
         fullWidth
+        required
+        error={errors.description}
+        helperText={errors.description && "Este campo no puede estar vacío"}
       />
       <TextField
-        autoFocus
         margin="dense"
         onChange={handleChange("price")}
         id="price"
@@ -35,9 +38,11 @@ export const FormCreateProducts = ({ handleChange, values }) => {
         value={getValue("price", values)}
         type="number"
         fullWidth
+        required
+        error={errors.price}
+        helperText={errors.price && "Este campo no puede estar vacío"}
       />
       <TextField
-        autoFocus
         margin="dense"
         onChange={handleChange("category")}
         id="category"
@@ -45,6 +50,9 @@ export const FormCreateProducts = ({ handleChange, values }) => {
         value={getValue("category", values)}
         type="text"
         fullWidth
+        required
+        error={errors.category}
+        helperText={errors.category && "Este campo no puede estar vacío"}
       />
     </form>
   );
