@@ -124,3 +124,56 @@ export const putToApi = async (
     })
     .catch((error) => onError(error));
 };
+
+export const deleteToApi = (
+  url = null,
+  onSuccess = null,
+  onError = () => {},
+  onPending = () => {},
+  token = "",
+  type = "delete",
+) => {
+  if (
+    url == null ||
+    url === "" ||
+    onSuccess == null ||
+    typeof onSuccess !== "function"
+  ) {
+    throw new Error("url and onSuccess can't be null or empty");
+  }
+  let headers = {};
+  if (type === "delete") {
+    headers = {
+      "Content-Type": "application/json; charset=utf-8",
+      Authorization: `Bearer ${token}`,
+    };
+  } else {
+    headers = {
+      "Content-Type": "application/json; charset=utf-8",
+    };
+  }
+
+  onPending();
+
+  return fetch(url, {
+    method: "DELETE",
+    redirect: "error",
+    headers,
+  })
+    .then((response) => {
+      return response.text().then((text) => {
+        const { status } = response;
+        if (text) {
+          text = JSON.parse(text);
+        }
+        if (response.statusText === "OK") {
+          return onSuccess({ text, status });
+        } else {
+          return onError({ text, status });
+        }
+      });
+    })
+    .catch((error) => {
+      return onError(error);
+    });
+};
