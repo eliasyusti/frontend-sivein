@@ -1,5 +1,6 @@
 import {
   CREATE_PRODUCTS,
+  DELETE_PRODUCTS,
   EDIT_PRODUCTS,
   GET_PRODUCTS,
 } from "../actionsTypes/productActionType";
@@ -25,6 +26,10 @@ const Products = (state = initialState, action) => {
         return item;
       });
       return [...newPartnerCheffs];
+    }
+    case DELETE_PRODUCTS: {
+      const newProduct = state.filter((item) => item._id !== action.payload);
+      return [...newProduct];
     }
     default:
       return state;

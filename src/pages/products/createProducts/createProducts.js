@@ -24,9 +24,21 @@ const getNewValuesForEdit = (valuesForEdit) => {
   };
 };
 
-export default function CreateProducts({ valuesForEdit, open, handleClose }) {
+export default function CreateProducts({
+  valuesForEdit,
+  open,
+  handleClose,
+  openAlertSuccess,
+  handleOpenAlertSuccess,
+}) {
   const dispatch = useDispatch();
   const [values, setValues] = useState(initValues);
+  const [errors, setErrors] = React.useState({
+    name: false,
+    description: false,
+    price: false,
+    category: false,
+  });
 
   useEffect(() => {
     if (!isEmpty(valuesForEdit)) {
@@ -37,17 +49,34 @@ export default function CreateProducts({ valuesForEdit, open, handleClose }) {
     setValues(initValues);
   }, [valuesForEdit]);
 
-  const handleChange = (name) => (event) => {
-    setValues({ ...values, [name]: event.target.value });
+  const handleChange = (fieldName) => (event) => {
+    const value = event.target.value;
+    setValues((prevValues) => ({
+      ...prevValues,
+      [fieldName]: value,
+    }));
+
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [fieldName]: value.trim() === "",
+    }));
   };
 
   const handleSave = async () => {
+    const hasEmptyFields = Object.values(values).some(
+      (value) => value.trim() === "",
+    );
+    if (hasEmptyFields) {
+      console.log("Hay campos vacíos. No se puede guardar.");
+      return;
+    }
     const functionActionsCreateEdit = isEmpty(valuesForEdit)
       ? postProducts
       : editProducts;
     await dispatch(functionActionsCreateEdit(values));
     setValues(initValues);
     handleClose();
+    handleOpenAlertSuccess();
   };
 
   return (
@@ -60,7 +89,11 @@ export default function CreateProducts({ valuesForEdit, open, handleClose }) {
         >
           <DialogContent>
             <DialogContentText>AGREGAR UN PRODUCTO NUEVO</DialogContentText>
-            <FormCreateProducts handleChange={handleChange} values={values} />
+            <FormCreateProducts
+              handleChange={handleChange}
+              values={values}
+              errors={errors}
+            />
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose} color="primary">

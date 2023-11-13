@@ -1,5 +1,10 @@
 import { URLAPI } from "./settings";
-import { getFromApi, postToApi, putToApi } from "./wrapperPeticions";
+import {
+  deleteToApi,
+  getFromApi,
+  postToApi,
+  putToApi,
+} from "./wrapperPeticions";
 const PATH_PRINCIPAL = "products";
 
 export const getProductsService = async () => {
@@ -37,6 +42,15 @@ export const editProductsService = async (body, onSuccess) => {
     return response;
   } catch (error) {
     console.error(`Error in update product ${error}`);
+    throw error;
+  }
+};
+
+export const deleteProductService = async (id, onSuccess) => {
+  try {
+    await deleteToApi(`${URLAPI}/${PATH_PRINCIPAL}/${id}`, onSuccess);
+  } catch (error) {
+    console.error(`Error in delete product ${error}`);
     throw error;
   }
 };
