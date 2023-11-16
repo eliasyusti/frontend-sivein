@@ -57,6 +57,7 @@ export default function DenseTable() {
   };
 
   const handleOpenAlertSuccess = async () => {
+    await productsData();
     setOpenAlertSuccess(true);
   };
   const handleCloseAlertSuccess = (event, reason) => {
@@ -65,25 +66,27 @@ export default function DenseTable() {
     }
     setOpenAlertSuccess(false);
   };
-
   const Products = useSelector((state) => state.Products);
 
   const data = Products.map((product) => ({
-    id: product.id,
-    name: product.name,
-    description: product.description,
-    price: product.price,
-    category: product.category,
+    id: product?.id,
+    name: product?.name,
+    description: product?.description,
+    price: product?.price,
+    stock: product?.stock,
+    category: product?.category?.name,
   }));
 
-  const handleEditProducts = (body) => {
+  const handleEditProducts = async (body) => {
     const [productEdit] = Products.filter((item) => item.id === body[0]);
+    await productsData();
     setValuesForEdit({
       id: productEdit.id,
       name: body[1],
       description: body[2],
       price: body[3],
-      category: body[4],
+      stock: body[4],
+      category: productEdit.category.id,
     });
     setOpen(true);
   };
@@ -113,6 +116,10 @@ export default function DenseTable() {
       label: "PRECIO",
     },
     {
+      name: "stock",
+      label: "STOCK",
+    },
+    {
       name: "category",
       label: "CATEGORIA",
     },
@@ -120,6 +127,9 @@ export default function DenseTable() {
       name: "ACCIONES",
       options: {
         filter: false,
+        viewColumns: false,
+        download: false,
+        sort: false,
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
             <ButtonGroup variant="text" aria-label="text button group">

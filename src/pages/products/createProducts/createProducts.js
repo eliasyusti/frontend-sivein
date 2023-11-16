@@ -15,12 +15,14 @@ const initValues = {
   name: "",
   description: "",
   price: "",
+  stock: "",
   category: "",
 };
 
 const getNewValuesForEdit = (valuesForEdit) => {
   return {
     ...valuesForEdit,
+    category: valuesForEdit.category ? valuesForEdit.category.id : "",
   };
 };
 
@@ -28,7 +30,6 @@ export default function CreateProducts({
   valuesForEdit,
   open,
   handleClose,
-  openAlertSuccess,
   handleOpenAlertSuccess,
 }) {
   const dispatch = useDispatch();
@@ -37,6 +38,7 @@ export default function CreateProducts({
     name: false,
     description: false,
     price: false,
+    stock: false,
     category: false,
   });
 
@@ -55,7 +57,6 @@ export default function CreateProducts({
       ...prevValues,
       [fieldName]: value,
     }));
-
     setErrors((prevErrors) => ({
       ...prevErrors,
       [fieldName]: value.trim() === "",
@@ -63,13 +64,13 @@ export default function CreateProducts({
   };
 
   const handleSave = async () => {
-    const hasEmptyFields = Object.values(values).some(
-      (value) => value.trim() === "",
-    );
-    if (hasEmptyFields) {
-      console.log("Hay campos vacíos. No se puede guardar.");
-      return;
-    }
+    // const hasEmptyFields = Object.values(values).some(
+    //   (value) => value.trim() === "",
+    // );
+    // if (hasEmptyFields) {
+    //   console.log("Hay campos vacíos. No se puede guardar.");
+    //   return;
+    // }
     const functionActionsCreateEdit = isEmpty(valuesForEdit)
       ? postProducts
       : editProducts;
@@ -88,11 +89,12 @@ export default function CreateProducts({
           aria-labelledby="form-dialog-title"
         >
           <DialogContent>
-            <DialogContentText>AGREGAR UN PRODUCTO NUEVO</DialogContentText>
+            <DialogContentText>DATOS DEL PRODUCTO</DialogContentText>
             <FormCreateProducts
               handleChange={handleChange}
               values={values}
               errors={errors}
+              selectedCategory={valuesForEdit.category}
             />
           </DialogContent>
           <DialogActions>
