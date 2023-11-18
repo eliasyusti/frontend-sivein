@@ -68,6 +68,8 @@ export default function DenseTable() {
   };
   const Products = useSelector((state) => state.Products);
 
+  const hasProducts = Products.length > 0;
+
   const data = Products.map((product) => ({
     id: product?.id,
     name: product?.name,
@@ -169,7 +171,11 @@ export default function DenseTable() {
           </Button>
         </Grid>
         <Grid item xs={12}>
-          <MUIDataTable columns={columns} data={data} options={options} />
+          {hasProducts ? (
+            <MUIDataTable columns={columns} data={data} options={options} />
+          ) : (
+            <p>No hay productos en stock para mostrar.</p>
+          )}
         </Grid>
         <CreateProducts
           valuesForEdit={valuesForEdit}
