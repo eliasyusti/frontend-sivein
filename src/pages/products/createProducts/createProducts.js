@@ -74,7 +74,6 @@ export default function CreateProducts({
   };
 
   const handleSave = async () => {
-    console.log(values);
     const areFieldsEmpty = Object.values(values).some((value) =>
       isEmpty(value),
     );

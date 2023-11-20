@@ -10,8 +10,17 @@ const initialState = [];
 const Products = (state = initialState, action) => {
   switch (action.type) {
     case GET_PRODUCTS: {
-      return [...action.payload];
+      if (action.payload && Array.isArray(action.payload)) {
+        return [...action.payload];
+      } else {
+        console.error(
+          "GET_PRODUCTS action payload is not a valid array:",
+          action.payload,
+        );
+        return state;
+      }
     }
+
     case CREATE_PRODUCTS: {
       return [...state, action.payload];
     }

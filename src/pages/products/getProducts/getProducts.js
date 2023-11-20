@@ -17,6 +17,7 @@ export default function DenseTable() {
   const [valuesForEdit, setValuesForEdit] = React.useState({});
   const [openAlertDelete, setOpenAlertDelete] = React.useState(false);
   const [openAlertSuccess, setOpenAlertSuccess] = React.useState(false);
+  const [hasProducts, setHasProducts] = React.useState(false);
   const [productId, setProductId] = React.useState(null);
   const dispatch = useDispatch();
   const productsData = useCallback(async () => {
@@ -26,6 +27,21 @@ export default function DenseTable() {
   useEffect(() => {
     productsData();
   }, [productsData]);
+
+  const Products = useSelector((state) => state.Products);
+
+  useEffect(() => {
+    setHasProducts(Products.length === 0);
+  }, [Products]);
+
+  const data = Products.map((product) => ({
+    id: product?.id,
+    name: product?.name,
+    description: product?.description,
+    price: product?.price,
+    stock: product?.stock,
+    category: product?.category?.name,
+  }));
 
   const handleClickOpen = () => {
     setValuesForEdit({});
@@ -47,7 +63,9 @@ export default function DenseTable() {
   const handleConfirmDelete = async () => {
     await dispatch(deleteProducts(productId[0]));
     handleCloseAlertDelete();
-    productsData();
+    if (Products.length === 1) {
+      setHasProducts(true);
+    }
     handleOpenAlertSuccess();
   };
 
@@ -66,18 +84,6 @@ export default function DenseTable() {
     }
     setOpenAlertSuccess(false);
   };
-  const Products = useSelector((state) => state.Products);
-
-  const hasProducts = Products.length > 0;
-
-  const data = Products.map((product) => ({
-    id: product?.id,
-    name: product?.name,
-    description: product?.description,
-    price: product?.price,
-    stock: product?.stock,
-    category: product?.category?.name,
-  }));
 
   const handleEditProducts = async (body) => {
     const [productEdit] = Products.filter((item) => item.id === body[0]);
@@ -172,9 +178,9 @@ export default function DenseTable() {
         </Grid>
         <Grid item xs={12}>
           {hasProducts ? (
-            <MUIDataTable columns={columns} data={data} options={options} />
-          ) : (
             <p>No hay productos en stock para mostrar.</p>
+          ) : (
+            <MUIDataTable columns={columns} data={data} options={options} />
           )}
         </Grid>
         <CreateProducts
