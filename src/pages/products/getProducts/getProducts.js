@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  deleteProducts,
+  //deleteProducts,
+  desactivateProduct,
   getListProducts,
 } from "../../../actions/productActions";
 import { Grid, Button, ButtonGroup } from "@material-ui/core";
@@ -61,7 +62,7 @@ export default function DenseTable() {
   };
 
   const handleConfirmDelete = async () => {
-    await dispatch(deleteProducts(productId[0]));
+    await dispatch(desactivateProduct(productId, handleOpenAlertSuccess));
     handleCloseAlertDelete();
     if (Products.length === 1) {
       setHasProducts(true);
@@ -89,12 +90,12 @@ export default function DenseTable() {
     const [productEdit] = Products.filter((item) => item.id === body[0]);
     await productsData();
     setValuesForEdit({
-      id: productEdit.id,
+      id: String(productEdit.id),
       name: body[1],
       description: body[2],
-      price: body[3],
-      stock: body[4],
-      category: productEdit.category.id,
+      price: String(body[3]),
+      stock: String(body[4]),
+      category: String(productEdit.category.id),
     });
     setOpen(true);
   };

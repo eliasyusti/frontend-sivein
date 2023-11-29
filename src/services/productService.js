@@ -54,3 +54,17 @@ export const deleteProductService = async (id, onSuccess) => {
     throw error;
   }
 };
+
+export const editProductActiveService = async (id, active, onSuccess) => {
+  try {
+    const response = await putToApi(
+      { active },
+      `${URLAPI}/${PATH_PRINCIPAL}/${id}`,
+      onSuccess,
+    );
+    return response;
+  } catch (error) {
+    console.error(`Error in edit product active status: ${error}`);
+    throw error;
+  }
+};
