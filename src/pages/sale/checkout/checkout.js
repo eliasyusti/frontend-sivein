@@ -1,4 +1,5 @@
-import * as React from "react";
+import React from "react";
+//import { isEmpty } from "lodash";
 import CssBaseline from "@mui/material/CssBaseline";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -10,9 +11,11 @@ import StepLabel from "@mui/material/StepLabel";
 import Button from "@mui/material/Button";
 import Link from "@mui/material/Link";
 import Typography from "@mui/material/Typography";
-import AddressForm from "./customerForm";
+import { AddressForm } from "./customerForm";
 import PaymentForm from "./salesForm";
 import Review from "./salesDetails";
+import { editCustomers, postCustomers } from "../../../actions/customerActions";
+import { useDispatch } from "react-redux";
 
 function Copyright() {
   return (
@@ -33,24 +36,47 @@ const steps = [
   "Finalizar Venta",
 ];
 
-function getStepContent(step) {
-  switch (step) {
-    case 0:
-      return <AddressForm />;
-    case 1:
-      return <PaymentForm />;
-    case 2:
-      return <Review />;
-    default:
-      throw new Error("Unknown step");
-  }
-}
+const initValues = {
+  rut: "",
+  name: "",
+  email: "",
+  numberPhone: "",
+};
 
 export default function Checkout() {
+  const dispatch = useDispatch();
   const [activeStep, setActiveStep] = React.useState(0);
+  const [values, setValues] = React.useState(initValues);
+  const [clickCount, setClickCount] = React.useState(0);
+  const [valuesForEdit, setValuesForEdit] = React.useState({});
 
-  const handleNext = () => {
+  const handleChange = (name) => (event) => {
+    setValues({ ...values, [name]: event.target.value });
+  };
+
+  function getStepContent(step) {
+    switch (step) {
+      case 0:
+        return <AddressForm values={values} handleChange={handleChange} />;
+      case 1:
+        return <PaymentForm />;
+      case 2:
+        return <Review />;
+      default:
+        throw new Error("Unknown step");
+    }
+  }
+
+  const handleNext = async () => {
     setActiveStep(activeStep + 1);
+    setClickCount((prevCount) => prevCount + 1);
+    if (activeStep === 0 && clickCount === 0) {
+      const newCustomer = await dispatch(postCustomers(values));
+      setValuesForEdit({ ...values, id: newCustomer.id });
+    } else {
+      const valueFinal = { ...values, id: String(valuesForEdit.id) };
+      await dispatch(editCustomers(valueFinal));
+    }
   };
 
   const handleBack = () => {
@@ -101,7 +127,7 @@ export default function Checkout() {
               <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                 {activeStep !== 0 && (
                   <Button onClick={handleBack} sx={{ mt: 3, ml: 1 }}>
-                    Back
+                    Atras
                   </Button>
                 )}
 
@@ -110,7 +136,9 @@ export default function Checkout() {
                   onClick={handleNext}
                   sx={{ mt: 3, ml: 1 }}
                 >
-                  {activeStep === steps.length - 1 ? "Place order" : "Next"}
+                  {activeStep === steps.length - 1
+                    ? "Place order"
+                    : "Siguiente"}
                 </Button>
               </Box>
             </React.Fragment>

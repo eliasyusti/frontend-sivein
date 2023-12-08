@@ -69,6 +69,9 @@ export default function PaymentForm() {
           <Grid item xs={12} md={5}>
             <Autocomplete
               options={products.map((product) => product.name)}
+              isOptionEqualToValue={(option, value) =>
+                option.value === value.value
+              }
               value={selectedObject ? selectedObject.name : ""}
               onChange={(event, value) => {
                 const selected = products.find(
