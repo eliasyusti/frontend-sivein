@@ -16,6 +16,7 @@ import PaymentForm from "./salesForm";
 import Review from "./salesDetails";
 import { editCustomers, postCustomers } from "../../../actions/customerActions";
 import { useDispatch } from "react-redux";
+import { postSale } from "../../../actions/salesActions";
 
 function Copyright() {
   return (
@@ -73,6 +74,8 @@ export default function Checkout() {
     if (activeStep === 0 && clickCount === 0) {
       const newCustomer = await dispatch(postCustomers(values));
       setValuesForEdit({ ...values, id: newCustomer.id });
+      const customerId = { customer: newCustomer.id };
+      await dispatch(postSale(customerId));
     } else {
       const valueFinal = { ...values, id: String(valuesForEdit.id) };
       await dispatch(editCustomers(valueFinal));
