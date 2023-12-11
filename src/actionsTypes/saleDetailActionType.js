@@ -1,0 +1,2 @@
+export const GET_SALE_DETAIL = "GET_SALE_DETAIL";
+export const CREATE_SALE_DETAIL = "CREATE_SALE_DETAIL";

@@ -1,5 +1,4 @@
-import React from "react";
-//import { isEmpty } from "lodash";
+import React, { useContext } from "react";
 import CssBaseline from "@mui/material/CssBaseline";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -17,6 +16,7 @@ import Review from "./salesDetails";
 import { editCustomers, postCustomers } from "../../../actions/customerActions";
 import { useDispatch } from "react-redux";
 import { postSale } from "../../../actions/salesActions";
+import { SaleContext } from "../../../context/saleContext";
 
 function Copyright() {
   return (
@@ -45,6 +45,7 @@ const initValues = {
 };
 
 export default function Checkout() {
+  const { setSaleId } = useContext(SaleContext);
   const dispatch = useDispatch();
   const [activeStep, setActiveStep] = React.useState(0);
   const [values, setValues] = React.useState(initValues);
@@ -75,7 +76,8 @@ export default function Checkout() {
       const newCustomer = await dispatch(postCustomers(values));
       setValuesForEdit({ ...values, id: newCustomer.id });
       const customerId = { customer: newCustomer.id };
-      await dispatch(postSale(customerId));
+      const newSale = await dispatch(postSale(customerId));
+      setSaleId(newSale.id);
     } else {
       const valueFinal = { ...values, id: String(valuesForEdit.id) };
       await dispatch(editCustomers(valueFinal));

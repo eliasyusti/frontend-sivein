@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
@@ -7,8 +7,11 @@ import { getListProducts } from "../../../actions/productActions";
 import { Button, List, ListItem, Paper, IconButton } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { Autocomplete } from "@mui/material";
+import { SaleContext } from "../../../context/saleContext";
+import { postSaleDetail } from "../../../actions/saleDetailActions";
 
 export default function PaymentForm() {
+  const { saleId } = useContext(SaleContext);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedObject, setSelectedObject] = useState(null);
   const [selectedQuantity, setSelectedQuantity] = useState(1);
@@ -39,13 +42,21 @@ export default function PaymentForm() {
     }
   };
 
-  const handleAddToSelected = () => {
+  const handleAddToSelected = async () => {
     if (selectedObject && selectedQuantity > 0) {
       const newItem = {
         id: selectedObject.id,
         name: selectedObject.name,
         quantity: selectedQuantity,
+        price: selectedObject.price,
       };
+      const saleDetail = {
+        quantity: newItem.quantity,
+        product: { id: newItem.id },
+        sales: { id: saleId },
+      };
+      console.log(saleDetail);
+      await dispatch(postSaleDetail(saleDetail));
 
       setSelectedItems([...selectedItems, newItem]);
       setSelectedObject(null);
@@ -83,7 +94,7 @@ export default function PaymentForm() {
                 <TextField
                   {...params}
                   label="Producto"
-                  variant="outlined"
+                  variant="standard"
                   onChange={(event, value) => handleSearch(event, value)}
                 />
               )}
@@ -96,7 +107,7 @@ export default function PaymentForm() {
               id="quantity"
               label="Cantidad"
               fullWidth
-              variant="outlined"
+              variant="standard"
               value={selectedQuantity}
               onChange={(event) => setSelectedQuantity(event.target.value)}
             />
@@ -122,7 +133,8 @@ export default function PaymentForm() {
         <List>
           {selectedItems.map((item) => (
             <ListItem key={item.id}>
-              {item.name} - Cantidad: {item.quantity}
+              {item.name} - Cantidad: {item.quantity} - Valor Unitario:{" "}
+              {item.price}
               <IconButton
                 aria-label="Eliminar"
                 onClick={() => handleRemoveItem(item.id)}

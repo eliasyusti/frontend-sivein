@@ -7,6 +7,7 @@ import DialogActions from "@mui/material/DialogActions";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import Checkout from "../checkout/checkout";
+import { SaleContextProvider } from "../../../context/saleContext";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -50,7 +51,9 @@ export default function CustomizedDialogs() {
           <CloseIcon />
         </IconButton>
         <DialogContent dividers>
-          <Checkout />
+          <SaleContextProvider>
+            <Checkout />
+          </SaleContextProvider>
         </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={handleClose}>
