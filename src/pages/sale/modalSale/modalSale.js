@@ -3,7 +3,6 @@ import Button from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
-import DialogActions from "@mui/material/DialogActions";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import Checkout from "../checkout/checkout";
@@ -15,6 +14,9 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   },
   "& .MuiDialogActions-root": {
     padding: theme.spacing(1),
+  },
+  "& .MuiDialog-paper": {
+    maxWidth: "200%",
   },
 }));
 
@@ -55,11 +57,6 @@ export default function CustomizedDialogs() {
             <Checkout />
           </SaleContextProvider>
         </DialogContent>
-        <DialogActions>
-          <Button autoFocus onClick={handleClose}>
-            Save changes
-          </Button>
-        </DialogActions>
       </BootstrapDialog>
     </React.Fragment>
   );

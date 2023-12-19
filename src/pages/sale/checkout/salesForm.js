@@ -4,7 +4,16 @@ import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import { getListProducts } from "../../../actions/productActions";
-import { Button, List, ListItem, Paper, IconButton } from "@material-ui/core";
+import {
+  Button,
+  List,
+  ListItem,
+  Paper,
+  IconButton,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+} from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { Autocomplete } from "@mui/material";
 import { SaleContext } from "../../../context/saleContext";
@@ -14,7 +23,10 @@ import {
   postSaleDetail,
 } from "../../../actions/saleDetailActions";
 
-export default function PaymentForm() {
+export default function PaymentForm({
+  handlePaymentMethodChange,
+  paymentMethod,
+}) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedObject, setSelectedObject] = useState(null);
   const [selectedQuantity, setSelectedQuantity] = useState(1);
@@ -50,6 +62,7 @@ export default function PaymentForm() {
     quantity: item?.quantity,
     sales: item?.sales?.id,
     subTotal: item?.subTotal,
+    paymentMethod: item?.sales?.paymentMethod,
   }));
 
   const handleAddToSelected = async () => {
@@ -157,10 +170,36 @@ export default function PaymentForm() {
             </ListItem>
           ))}
         </List>
-        <Paper elevation={3} style={{ padding: "20px", marginTop: "20px" }}>
-          <Typography variant="h6">Total a Pagar</Typography>
-          <Typography variant="h4">${totalToPay.toFixed(2)}</Typography>
-        </Paper>
+      </Paper>
+      <Paper elevation={3} style={{ padding: "20px", marginTop: "20px" }}>
+        <Typography variant="h6">Total a Pagar</Typography>
+        <Typography variant="h4">${totalToPay.toFixed(2)}</Typography>
+      </Paper>
+      <Paper elevation={3} style={{ padding: "20px", marginTop: "20px" }}>
+        <Typography variant="h6">Método de Pago</Typography>
+        <RadioGroup
+          row
+          aria-label="paymentMethod"
+          name="paymentMethod"
+          value={paymentMethod}
+          onChange={handlePaymentMethodChange}
+        >
+          <FormControlLabel
+            value="Efectivo"
+            control={<Radio />}
+            label="Efectivo"
+          />
+          <FormControlLabel
+            value="Tarjeta de Credito"
+            control={<Radio />}
+            label="Crédito"
+          />
+          <FormControlLabel
+            value="Tarjeta de Debito"
+            control={<Radio />}
+            label="Débito"
+          />
+        </RadioGroup>
       </Paper>
     </React.Fragment>
   );

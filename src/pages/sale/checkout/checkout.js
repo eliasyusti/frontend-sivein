@@ -15,7 +15,7 @@ import PaymentForm from "./salesForm";
 import Review from "./salesDetails";
 import { editCustomers, postCustomers } from "../../../actions/customerActions";
 import { useDispatch } from "react-redux";
-import { postSale } from "../../../actions/salesActions";
+import { editSale, postSale } from "../../../actions/salesActions";
 import { SaleContext } from "../../../context/saleContext";
 
 function Copyright() {
@@ -46,14 +46,21 @@ const initValues = {
 
 export default function Checkout() {
   const { setSaleId } = useContext(SaleContext);
+  const { setCustomer } = useContext(SaleContext);
   const dispatch = useDispatch();
   const [activeStep, setActiveStep] = React.useState(0);
   const [values, setValues] = React.useState(initValues);
   const [clickCount, setClickCount] = React.useState(0);
   const [valuesForEdit, setValuesForEdit] = React.useState({});
+  const [paymentId, setPaymentId] = React.useState({});
+  const [paymentMethod, setPaymentMethod] = React.useState("Efectivo");
 
   const handleChange = (name) => (event) => {
     setValues({ ...values, [name]: event.target.value });
+  };
+
+  const handlePaymentMethodChange = (event) => {
+    setPaymentMethod(event.target.value);
   };
 
   function getStepContent(step) {
@@ -61,9 +68,14 @@ export default function Checkout() {
       case 0:
         return <AddressForm values={values} handleChange={handleChange} />;
       case 1:
-        return <PaymentForm />;
+        return (
+          <PaymentForm
+            paymentMethod={paymentMethod}
+            handlePaymentMethodChange={handlePaymentMethodChange}
+          />
+        );
       case 2:
-        return <Review />;
+        return <Review paymentMethod={paymentMethod} />;
       default:
         throw new Error("Unknown step");
     }
@@ -77,10 +89,16 @@ export default function Checkout() {
       setValuesForEdit({ ...values, id: newCustomer.id });
       const customerId = { customer: newCustomer.id };
       const newSale = await dispatch(postSale(customerId));
+      setPaymentId(newSale);
+      console.log(paymentId);
       setSaleId(newSale.id);
+      setCustomer(newCustomer);
     } else {
       const valueFinal = { ...values, id: String(valuesForEdit.id) };
       await dispatch(editCustomers(valueFinal));
+      const method = { paymentMethod: paymentMethod };
+      const editPaymentMethod = { ...method, id: paymentId.id };
+      await dispatch(editSale(editPaymentMethod));
     }
   };
 
@@ -100,10 +118,10 @@ export default function Checkout() {
           borderBottom: (t) => `1px solid ${t.palette.divider}`,
         }}
       ></AppBar>
-      <Container component="main" maxWidth="sm" sx={{ mb: 4 }}>
+      <Container component="main" maxWidth="md" sx={{ mb: 4 }}>
         <Paper
           variant="outlined"
-          sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
+          sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 }, maxWidth: "100%" }}
         >
           <Typography component="h1" variant="h4" align="center">
             Venta
@@ -118,12 +136,7 @@ export default function Checkout() {
           {activeStep === steps.length ? (
             <React.Fragment>
               <Typography variant="h5" gutterBottom>
-                Thank you for your order.
-              </Typography>
-              <Typography variant="subtitle1">
-                Your order number is #2001539. We have emailed your order
-                confirmation, and will send you an update when your order has
-                shipped.
+                La venta #{paymentId.id} fue completada con exito!
               </Typography>
             </React.Fragment>
           ) : (
