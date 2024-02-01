@@ -101,105 +101,123 @@ export default function PaymentForm({
       <Typography variant="h6" gutterBottom>
         Detalle de la Venta
       </Typography>
-      <Paper elevation={3} style={{ padding: "20px", marginBottom: "20px" }}>
-        <Grid container spacing={3} alignItems="center">
-          <Grid item xs={12} md={5}>
-            <Autocomplete
-              options={products.map((product) => product.name)}
-              isOptionEqualToValue={(option, value) =>
-                option.value === value.value
-              }
-              value={selectedObject ? selectedObject.name : ""}
-              onChange={(event, value) => {
-                const selected = products.find(
-                  (product) => product.name === value,
-                );
-                setSelectedObject(selected || null);
-              }}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Producto"
-                  variant="standard"
-                  onChange={(event, value) => handleSearch(event, value)}
-                />
-              )}
-            />
-          </Grid>
-          <Grid item xs={12} md={3}>
-            <TextField
-              required
-              type="number"
-              id="quantity"
-              label="Cantidad"
-              fullWidth
-              variant="standard"
-              value={selectedQuantity}
-              onChange={(event) => setSelectedQuantity(event.target.value)}
-            />
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleAddToSelected}
-              disabled={!selectedObject}
-              style={{ marginTop: "16px" }}
+      <Grid
+        container
+        justifyContent="space-between"
+        spacing={2}
+        alignItems="center"
+      >
+        <Grid item xs={12} sm={6}>
+          <Autocomplete
+            options={products.map((product) => product.name)}
+            isOptionEqualToValue={(option, value) =>
+              option.value === value.value
+            }
+            value={selectedObject ? selectedObject.name : ""}
+            onChange={(event, value) => {
+              const selected = products.find(
+                (product) => product.name === value,
+              );
+              setSelectedObject(selected || null);
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Producto"
+                variant="standard"
+                onChange={(event, value) => handleSearch(event, value)}
+              />
+            )}
+          />
+        </Grid>
+        <Grid item xs={12} sm={3}>
+          <TextField
+            required
+            type="number"
+            id="quantity"
+            label="Cantidad"
+            fullWidth
+            variant="standard"
+            value={selectedQuantity}
+            onChange={(event) => setSelectedQuantity(event.target.value)}
+          />
+        </Grid>
+        <Grid item xs={12} sm={3}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleAddToSelected}
+            disabled={!selectedObject}
+            style={{ marginTop: "16px" }}
+          >
+            Agregar
+          </Button>
+        </Grid>
+        <Grid item xs={12}>
+          <Typography variant="h6" style={{ marginTop: "50px" }} gutterBottom>
+            Lista de Productos Agregados
+          </Typography>
+          <List>
+            {data.map((item) => (
+              <ListItem key={item.id}>
+                Producto: {item.name} - Cantidad: {item.quantity} - Precio
+                Unitario: {item.price} - Sub-Total: {item.subTotal}
+                <IconButton
+                  aria-label="Eliminar"
+                  onClick={() => handleRemoveItem(item.id)}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </ListItem>
+            ))}
+          </List>
+        </Grid>
+      </Grid>
+      <Grid
+        container
+        justifyContent="center"
+        alignItems="center"
+        spacing={2}
+        style={{ marginTop: 30 }}
+      >
+        <Grid item xs={12}>
+          <Typography variant="h6" style={{ textAlign: "center" }}>
+            Método de Pago
+          </Typography>
+          <Grid container justifyContent="center">
+            <RadioGroup
+              row
+              aria-label="paymentMethod"
+              name="paymentMethod"
+              value={paymentMethod}
+              onChange={handlePaymentMethodChange}
             >
-              Agregar
-            </Button>
+              <FormControlLabel
+                value="Efectivo"
+                control={<Radio />}
+                label="Efectivo"
+              />
+              <FormControlLabel
+                value="Tarjeta de Credito"
+                control={<Radio />}
+                label="Crédito"
+              />
+              <FormControlLabel
+                value="Tarjeta de Debito"
+                control={<Radio />}
+                label="Débito"
+              />
+            </RadioGroup>
           </Grid>
         </Grid>
-      </Paper>
-
-      <Typography variant="h6" gutterBottom>
-        Lista de Productos Agregados
-      </Typography>
-      <Paper elevation={3} style={{ padding: "20px" }}>
-        <List>
-          {data.map((item) => (
-            <ListItem key={item.id}>
-              Producto: {item.name} - Cantidad: {item.quantity} - Precio
-              Unitario: {item.price} - Sub-Total: {item.subTotal}
-              <IconButton
-                aria-label="Eliminar"
-                onClick={() => handleRemoveItem(item.id)}
-              >
-                <DeleteIcon />
-              </IconButton>
-            </ListItem>
-          ))}
-        </List>
-      </Paper>
+      </Grid>
       <Paper elevation={3} style={{ padding: "20px", marginTop: "20px" }}>
-        <Typography variant="h6">Total a Pagar</Typography>
-        <Typography variant="h4">${totalToPay.toFixed(2)}</Typography>
-      </Paper>
-      <Paper elevation={3} style={{ padding: "20px", marginTop: "20px" }}>
-        <Typography variant="h6">Método de Pago</Typography>
-        <RadioGroup
-          row
-          aria-label="paymentMethod"
-          name="paymentMethod"
-          value={paymentMethod}
-          onChange={handlePaymentMethodChange}
-        >
-          <FormControlLabel
-            value="Efectivo"
-            control={<Radio />}
-            label="Efectivo"
-          />
-          <FormControlLabel
-            value="Tarjeta de Credito"
-            control={<Radio />}
-            label="Crédito"
-          />
-          <FormControlLabel
-            value="Tarjeta de Debito"
-            control={<Radio />}
-            label="Débito"
-          />
-        </RadioGroup>
+        <Typography variant="h6" style={{ textAlign: "center" }}>
+          Total a Pagar
+        </Typography>
+        <Typography variant="h4" style={{ textAlign: "center" }}>
+          ${totalToPay.toFixed(2)}
+        </Typography>
       </Paper>
     </React.Fragment>
   );

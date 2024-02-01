@@ -43,39 +43,46 @@ export default function Review({ paymentMethod }) {
       <Typography variant="h6" gutterBottom>
         Detalle total de la Venta
       </Typography>
-      <List disablePadding>
-        {data.map((product) => (
-          <ListItem
-            key={product.name}
-            sx={{
-              py: 1,
-              px: 0,
-              display: "flex",
-              justifyContent: "space-between",
-            }}
-          >
-            <ListItemText
-              primary={product.name}
-              secondary={`${product.price}$`}
-            />
-            <ListItemText
-              sx={{
-                alignItems: "center",
-                textAlign: "center",
-              }}
-              primary={`x${product.quantity}`}
-            />
-            <Typography variant="body2">{product.subTotal}$</Typography>
-          </ListItem>
-        ))}
-        <ListItem sx={{ py: 1, px: 0 }}>
-          <ListItemText primary="Total" />
-          <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-            {totalToPay}$
-          </Typography>
-        </ListItem>
-      </List>
-      <Grid container spacing={2}>
+      <Grid
+        container
+        justifyContent="space-between"
+        spacing={2}
+        alignItems="center"
+      >
+        <Grid item xs={12}>
+          <List disablePadding>
+            {data.map((product) => (
+              <ListItem
+                key={product.name}
+                sx={{
+                  py: 1,
+                  px: 0,
+                  display: "flex",
+                  justifyContent: "space-between",
+                }}
+              >
+                <ListItemText
+                  primary={product.name}
+                  secondary={`${product.price}$`}
+                />
+                <ListItemText
+                  sx={{
+                    alignItems: "center",
+                    textAlign: "center",
+                  }}
+                  primary={`x${product.quantity}`}
+                />
+                <Typography variant="body2">{product.subTotal}$</Typography>
+              </ListItem>
+            ))}
+            <ListItem sx={{ py: 1, px: 0 }}>
+              <ListItemText primary="Total" />
+              <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                {totalToPay}$
+              </Typography>
+            </ListItem>
+          </List>
+        </Grid>
         <Grid item xs={12} sm={6}>
           <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
             Datos del Cliente
@@ -84,8 +91,8 @@ export default function Review({ paymentMethod }) {
           <Typography gutterBottom>{customer.email},</Typography>
           <Typography gutterBottom>{customer.numberPhone},</Typography>
         </Grid>
-        <Grid item container direction="column" xs={12} sm={6}>
-          <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
+        <Grid item xs={12} sm={6}>
+          <Typography variant="h6" gutterBottom sx={{ mt: -1.9 }}>
             Detalles del pago
           </Typography>
           <Grid container>

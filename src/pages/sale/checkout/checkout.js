@@ -8,7 +8,6 @@ import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 import Button from "@mui/material/Button";
-import Link from "@mui/material/Link";
 import Typography from "@mui/material/Typography";
 import { AddressForm } from "./customerForm";
 import PaymentForm from "./salesForm";
@@ -17,19 +16,6 @@ import { editCustomers, postCustomers } from "../../../actions/customerActions";
 import { useDispatch } from "react-redux";
 import { editSale, postSale } from "../../../actions/salesActions";
 import { SaleContext } from "../../../context/saleContext";
-
-function Copyright() {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center">
-      {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
 
 const steps = [
   "Detalles del Cliente",
@@ -162,7 +148,6 @@ export default function Checkout() {
             </React.Fragment>
           )}
         </Paper>
-        <Copyright />
       </Container>
     </React.Fragment>
   );
