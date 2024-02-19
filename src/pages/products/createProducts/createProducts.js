@@ -5,17 +5,27 @@ import {
   Button,
   Dialog,
   DialogContent,
-  DialogContentText,
   DialogActions,
+  DialogTitle,
 } from "@material-ui/core";
 import { FormCreateProducts } from "../createProducts/formCreateProducts";
 import { editProducts, postProducts } from "../../../actions/productActions";
+import AlertWarning from "../../../components/AlertDialog/warning";
 
 const initValues = {
   name: "",
   description: "",
   price: "",
+  stock: "",
   category: "",
+};
+
+const valueForErrors = {
+  name: false,
+  description: false,
+  price: false,
+  stock: false,
+  category: false,
 };
 
 const getNewValuesForEdit = (valuesForEdit) => {
@@ -28,17 +38,12 @@ export default function CreateProducts({
   valuesForEdit,
   open,
   handleClose,
-  openAlertSuccess,
   handleOpenAlertSuccess,
 }) {
   const dispatch = useDispatch();
   const [values, setValues] = useState(initValues);
-  const [errors, setErrors] = React.useState({
-    name: false,
-    description: false,
-    price: false,
-    category: false,
-  });
+  const [errors, setErrors] = React.useState({ valueForErrors });
+  const [IsErrors, setIsErrors] = React.useState(false);
 
   useEffect(() => {
     if (!isEmpty(valuesForEdit)) {
@@ -49,13 +54,19 @@ export default function CreateProducts({
     setValues(initValues);
   }, [valuesForEdit]);
 
+  const handleCloseAlertWarning = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setIsErrors(false);
+  };
+
   const handleChange = (fieldName) => (event) => {
     const value = event.target.value;
     setValues((prevValues) => ({
       ...prevValues,
       [fieldName]: value,
     }));
-
     setErrors((prevErrors) => ({
       ...prevErrors,
       [fieldName]: value.trim() === "",
@@ -63,11 +74,11 @@ export default function CreateProducts({
   };
 
   const handleSave = async () => {
-    const hasEmptyFields = Object.values(values).some(
-      (value) => value.trim() === "",
+    const areFieldsEmpty = Object.values(values).some((value) =>
+      isEmpty(value),
     );
-    if (hasEmptyFields) {
-      console.log("Hay campos vacíos. No se puede guardar.");
+    if (areFieldsEmpty) {
+      setIsErrors(true);
       return;
     }
     const functionActionsCreateEdit = isEmpty(valuesForEdit)
@@ -87,14 +98,23 @@ export default function CreateProducts({
           onClose={handleClose}
           aria-labelledby="form-dialog-title"
         >
+          <DialogTitle id="form-dialog-title">DATOS DEL PRODUCTO</DialogTitle>
           <DialogContent>
-            <DialogContentText>AGREGAR UN PRODUCTO NUEVO</DialogContentText>
+            {IsErrors && (
+              <AlertWarning
+                openAlertWarning={IsErrors}
+                handleCloseAlertWarning={handleCloseAlertWarning}
+                description={"Debes completar todos los campos"}
+              />
+            )}
             <FormCreateProducts
               handleChange={handleChange}
               values={values}
               errors={errors}
+              selectedCategory={valuesForEdit.category}
             />
           </DialogContent>
+
           <DialogActions>
             <Button onClick={handleClose} color="primary">
               Cancelar

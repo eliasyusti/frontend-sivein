@@ -14,7 +14,7 @@ import Sidebar from "../Sidebar";
 import Dashboard from "../../pages/dashboard";
 import Notifications from "../../pages/notifications";
 import Maps from "../../pages/maps";
-import Tables from "../../pages/tables";
+import SaleProducts from "../../pages/sale";
 import Icons from "../../pages/icons";
 import Charts from "../../pages/charts";
 import Products from "../../pages/products";
@@ -42,7 +42,7 @@ function Layout(props) {
           <Switch>
             <Route path="/app/dashboard" component={Dashboard} />
             <Route path="/app/products" component={Products} />
-            <Route path="/app/tables" component={Tables} />
+            <Route path="/app/sale" component={SaleProducts} />
             <Route path="/app/notifications" component={Notifications} />
             <Route
               exact

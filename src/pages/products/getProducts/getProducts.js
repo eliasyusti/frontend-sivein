@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  deleteProducts,
+  desactivateProduct,
   getListProducts,
 } from "../../../actions/productActions";
-import { Grid, Button, ButtonGroup } from "@material-ui/core";
+import { Grid, Button, ButtonGroup, Tooltip } from "@material-ui/core";
 import MUIDataTable from "mui-datatables";
-import AddShoppingCartIcon from "@material-ui/icons/AddShoppingCart";
+import PostAddIcon from "@material-ui/icons/PostAdd";
 import { Edit, Delete } from "@material-ui/icons";
 import CreateProducts from "../createProducts/createProducts";
 import AlertDialog from "../../../components/AlertDialog";
@@ -17,6 +17,7 @@ export default function DenseTable() {
   const [valuesForEdit, setValuesForEdit] = React.useState({});
   const [openAlertDelete, setOpenAlertDelete] = React.useState(false);
   const [openAlertSuccess, setOpenAlertSuccess] = React.useState(false);
+  const [hasProducts, setHasProducts] = React.useState(false);
   const [productId, setProductId] = React.useState(null);
   const dispatch = useDispatch();
   const productsData = useCallback(async () => {
@@ -26,6 +27,21 @@ export default function DenseTable() {
   useEffect(() => {
     productsData();
   }, [productsData]);
+
+  const Products = useSelector((state) => state.Products);
+
+  useEffect(() => {
+    setHasProducts(Products.length === 0);
+  }, [Products]);
+
+  const data = Products.map((product) => ({
+    id: product?.id,
+    name: product?.name,
+    description: product?.description,
+    price: product?.price,
+    stock: product?.stock,
+    category: product?.category?.name,
+  }));
 
   const handleClickOpen = () => {
     setValuesForEdit({});
@@ -45,9 +61,11 @@ export default function DenseTable() {
   };
 
   const handleConfirmDelete = async () => {
-    await dispatch(deleteProducts(productId[0]));
+    await dispatch(desactivateProduct(productId, handleOpenAlertSuccess));
     handleCloseAlertDelete();
-    productsData();
+    if (Products.length === 1) {
+      setHasProducts(true);
+    }
     handleOpenAlertSuccess();
   };
 
@@ -57,6 +75,7 @@ export default function DenseTable() {
   };
 
   const handleOpenAlertSuccess = async () => {
+    await productsData();
     setOpenAlertSuccess(true);
   };
   const handleCloseAlertSuccess = (event, reason) => {
@@ -66,24 +85,16 @@ export default function DenseTable() {
     setOpenAlertSuccess(false);
   };
 
-  const Products = useSelector((state) => state.Products);
-
-  const data = Products.map((product) => ({
-    id: product.id,
-    name: product.name,
-    description: product.description,
-    price: product.price,
-    category: product.category,
-  }));
-
-  const handleEditProducts = (body) => {
+  const handleEditProducts = async (body) => {
     const [productEdit] = Products.filter((item) => item.id === body[0]);
+    await productsData();
     setValuesForEdit({
-      id: productEdit.id,
+      id: String(productEdit.id),
       name: body[1],
       description: body[2],
-      price: body[3],
-      category: body[4],
+      price: String(body[3]),
+      stock: String(body[4]),
+      category: String(productEdit.category.id),
     });
     setOpen(true);
   };
@@ -113,6 +124,10 @@ export default function DenseTable() {
       label: "PRECIO",
     },
     {
+      name: "stock",
+      label: "STOCK",
+    },
+    {
       name: "category",
       label: "CATEGORIA",
     },
@@ -120,19 +135,26 @@ export default function DenseTable() {
       name: "ACCIONES",
       options: {
         filter: false,
+        viewColumns: false,
+        download: false,
+        sort: false,
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
             <ButtonGroup variant="text" aria-label="text button group">
-              <Button
-                onClick={() => {
-                  handleEditProducts(tableMeta.rowData);
-                }}
-              >
-                <Edit />
-              </Button>
-              <Button onClick={() => handleClickDelete(tableMeta.rowData)}>
-                <Delete />
-              </Button>
+              <Tooltip title="Editar">
+                <Button
+                  onClick={() => {
+                    handleEditProducts(tableMeta.rowData);
+                  }}
+                >
+                  <Edit />
+                </Button>
+              </Tooltip>
+              <Tooltip title="Eliminar">
+                <Button onClick={() => handleClickDelete(tableMeta.rowData)}>
+                  <Delete />
+                </Button>
+              </Tooltip>
             </ButtonGroup>
           );
         },
@@ -148,18 +170,24 @@ export default function DenseTable() {
     <>
       <Grid container spacing={2}>
         <Grid item xs={6}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => {
-              handleClickOpen();
-            }}
-          >
-            <AddShoppingCartIcon />
-          </Button>
+          <Tooltip title="Agregar un producto">
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => {
+                handleClickOpen();
+              }}
+            >
+              <PostAddIcon />
+            </Button>
+          </Tooltip>
         </Grid>
         <Grid item xs={12}>
-          <MUIDataTable columns={columns} data={data} options={options} />
+          {hasProducts ? (
+            <p>No hay productos en stock para mostrar.</p>
+          ) : (
+            <MUIDataTable columns={columns} data={data} options={options} />
+          )}
         </Grid>
         <CreateProducts
           valuesForEdit={valuesForEdit}
