@@ -16,6 +16,17 @@ export const getSalesService = async () => {
   }
 };
 
+export const getSaleByIdService = async (id) => {
+  try {
+    const response = await getFromApi(`${URLAPI}/${PATH_PRINCIPAL}/${id}`);
+    const { data } = response;
+    return data;
+  } catch (error) {
+    console.error(`Error in show sale details ${error}`);
+    throw error;
+  }
+};
+
 export const createSaleService = async (body, onSuccess, onPending) => {
   try {
     const { data } = await postToApi(

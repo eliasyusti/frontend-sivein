@@ -3,11 +3,13 @@ import {
   DELETE_SALES,
   EDIT_SALES,
   GET_SALES,
+  GET_SALE_BY_ID,
 } from "../actionsTypes/salesActionsType";
 import {
   createSaleService,
   deleteSaleService,
   editSaleService,
+  getSaleByIdService,
   getSalesService,
 } from "../services/saleService";
 
@@ -30,6 +32,25 @@ export const getListSales = () => {
   return async (dispatch) => {
     const ListSales = await getSalesService(getData);
     dispatch(dispatchAction(GET_SALES, ListSales));
+  };
+};
+
+export const getSaleById = (id) => {
+  return async (dispatch) => {
+    try {
+      const response = await getSaleByIdService(id);
+      if (response && response.data) {
+        const { data } = response.data || [];
+
+        dispatch(dispatchAction(GET_SALE_BY_ID, data));
+        return response;
+      } else {
+        console.error("Response is undefined.");
+      }
+    } catch (error) {
+      console.error("Error fetching sale details:", error);
+      throw error;
+    }
   };
 };
 

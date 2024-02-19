@@ -7,6 +7,8 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import Checkout from "../checkout/checkout";
 import { SaleContextProvider } from "../../../context/saleContext";
+import { Grid, Tooltip } from "@material-ui/core";
+import AddShoppingCartIcon from "@material-ui/icons/AddShoppingCart";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -31,10 +33,20 @@ export default function CustomizedDialogs() {
   };
 
   return (
-    <React.Fragment>
-      <Button variant="outlined" onClick={handleClickOpen}>
-        Open dialog
-      </Button>
+    <Grid container spacing={2}>
+      <Grid item xs={6}>
+        <Tooltip title="Agregar venta">
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              handleClickOpen();
+            }}
+          >
+            <AddShoppingCartIcon />
+          </Button>
+        </Tooltip>
+      </Grid>
       <BootstrapDialog
         onClose={handleClose}
         aria-labelledby="customized-dialog-title"
@@ -58,6 +70,6 @@ export default function CustomizedDialogs() {
           </SaleContextProvider>
         </DialogContent>
       </BootstrapDialog>
-    </React.Fragment>
+    </Grid>
   );
 }

@@ -1,13 +1,12 @@
 import React, { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  //deleteProducts,
   desactivateProduct,
   getListProducts,
 } from "../../../actions/productActions";
-import { Grid, Button, ButtonGroup } from "@material-ui/core";
+import { Grid, Button, ButtonGroup, Tooltip } from "@material-ui/core";
 import MUIDataTable from "mui-datatables";
-import AddShoppingCartIcon from "@material-ui/icons/AddShoppingCart";
+import PostAddIcon from "@material-ui/icons/PostAdd";
 import { Edit, Delete } from "@material-ui/icons";
 import CreateProducts from "../createProducts/createProducts";
 import AlertDialog from "../../../components/AlertDialog";
@@ -142,16 +141,20 @@ export default function DenseTable() {
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
             <ButtonGroup variant="text" aria-label="text button group">
-              <Button
-                onClick={() => {
-                  handleEditProducts(tableMeta.rowData);
-                }}
-              >
-                <Edit />
-              </Button>
-              <Button onClick={() => handleClickDelete(tableMeta.rowData)}>
-                <Delete />
-              </Button>
+              <Tooltip title="Editar">
+                <Button
+                  onClick={() => {
+                    handleEditProducts(tableMeta.rowData);
+                  }}
+                >
+                  <Edit />
+                </Button>
+              </Tooltip>
+              <Tooltip title="Eliminar">
+                <Button onClick={() => handleClickDelete(tableMeta.rowData)}>
+                  <Delete />
+                </Button>
+              </Tooltip>
             </ButtonGroup>
           );
         },
@@ -167,15 +170,17 @@ export default function DenseTable() {
     <>
       <Grid container spacing={2}>
         <Grid item xs={6}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => {
-              handleClickOpen();
-            }}
-          >
-            <AddShoppingCartIcon />
-          </Button>
+          <Tooltip title="Agregar un producto">
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => {
+                handleClickOpen();
+              }}
+            >
+              <PostAddIcon />
+            </Button>
+          </Tooltip>
         </Grid>
         <Grid item xs={12}>
           {hasProducts ? (

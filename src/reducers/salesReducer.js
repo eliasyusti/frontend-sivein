@@ -3,6 +3,7 @@ import {
   DELETE_SALES,
   EDIT_SALES,
   GET_SALES,
+  GET_SALE_BY_ID,
 } from "../actionsTypes/salesActionsType";
 
 const initialState = [];
@@ -15,6 +16,18 @@ const Sales = (state = initialState, action) => {
       } else {
         console.error(
           "GET_SALES action payload is not a valid array:",
+          action.payload,
+        );
+        return state;
+      }
+    }
+
+    case GET_SALE_BY_ID: {
+      if (action.payload && typeof action.payload === "object") {
+        return [action.payload]; // Devuelve un array con la venta encontrada
+      } else {
+        console.error(
+          "GET_SALE_BY_ID action payload is not a valid object:",
           action.payload,
         );
         return state;
